@@ -1,0 +1,31 @@
+name: Rust CI workflow
+
+on:
+  push:
+    branches: [ "main", "feature/**","bugfix/**"]
+  pull_request:
+    branches: [ "main" ,"feature/**","bugfix/**"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Code coverage
+      run: cargo tarpaulin --ignore-test
+    - name: Formatting
+      run: cargo fmt --all -- --check
+    - name: Linting
+      run: cargo clippy -- -D warnings
+    - name: Auditing
+      run: cargo audit
