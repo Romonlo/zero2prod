@@ -16,7 +16,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: rustfmt, clippy
+    - name: Install Tarpaulin
+      run: cargo install cargo-tarpaulin
+    - name: Install Audit
+      run: cargo install cargo-audit
+      
     - name: Build
       run: cargo build --verbose
     - name: Run tests
