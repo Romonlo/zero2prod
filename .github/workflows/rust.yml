@@ -31,7 +31,7 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
     - name: Code coverage
-      run: cargo tarpaulin -- --ignore-test
+      run: cargo tarpaulin -- --ignore-testS
     - name: Formatting
       run: cargo fmt --all -- --check
     - name: Linting
