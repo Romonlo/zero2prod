@@ -2,39 +2,51 @@ name: Rust CI workflow
 
 on:
   push:
-    branches: [ "main", "feature/**","bugfix/**"]
+    branches:
+      - main
+      - feature/**
+      - bugfix/**
   pull_request:
-    branches: [ "main" ,"feature/**","bugfix/**"]
+    branches:
+      - main
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Rust toolchain
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        components: rustfmt, clippy
-    - name: Install Tarpaulin
-      run: cargo install cargo-tarpaulin
-    - name: Install Audit
-      run: cargo install cargo-audit
-      
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
-    - name: Code coverage
-      run: cargo tarpaulin -- --ignore-tests
-    - name: Formatting
-      run: cargo fmt --all -- --check
-    - name: Linting
-      run: cargo clippy -- -D warnings
-    - name: Auditing
-      run: cargo audit
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install Tarpaulin
+        run: cargo install cargo-tarpaulin --locked
+
+      - name: Install Audit
+        run: cargo install cargo-audit --locked
+
+      - name: Build
+        run: cargo build --all-features --verbose
+
+      - name: Run tests
+        run: cargo test --all-features --verbose
+
+      - name: Code coverage
+        run: cargo tarpaulin
+
+      - name: Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Linting
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Auditing
+        run: cargo audit
